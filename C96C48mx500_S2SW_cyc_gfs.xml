@@ -6,7 +6,7 @@
 		Main workflow manager for Global Forecast System
 
 	NOTES:
-		This workflow was automatically generated at 2025-12-16 18:57:25.564145
+		This workflow was automatically generated at 2025-12-16 18:56:42.876057
 	-->
 	<!ENTITY PSLOT "C96C48mx500_S2SW_cyc_gfs">
 	<!ENTITY ROTDIR "/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs">
@@ -1079,19 +1079,23 @@
 
 	<dependency>
 		<and>
-			<taskdep task="gfs_atmanlprod"/>
-			<taskdep task="gfs_vminmon"/>
-			<taskdep task="gfs_tracker"/>
-			<taskdep task="gfs_genesis"/>
 			<metataskdep metatask="gfs_atmos_prod"/>
-			<metataskdep metatask="gfs_wavepostsbs"/>
-			<taskdep task="gfs_wavepostpnt"/>
-			<taskdep task="gfs_wavepostbndpnt"/>
-			<taskdep task="gfs_wavepostbndpntbll"/>
-			<metataskdep metatask="gfs_ocean_prod"/>
-			<metataskdep metatask="gfs_ice_prod"/>
-			<taskdep task="gfs_arch_vrfy"/>
-			<metataskdep metatask="gfs_arch_tars"/>
+			<or>
+				<and>
+					<taskdep task="gfs_atmanlprod"/>
+					<taskdep task="gfs_vminmon"/>
+					<taskdep task="gfs_tracker"/>
+					<taskdep task="gfs_genesis"/>
+					<metataskdep metatask="gfs_wavepostsbs"/>
+					<taskdep task="gfs_wavepostpnt"/>
+					<taskdep task="gfs_wavepostbndpnt"/>
+					<taskdep task="gfs_wavepostbndpntbll"/>
+					<metataskdep metatask="gfs_ocean_prod"/>
+					<metataskdep metatask="gfs_ice_prod"/>
+					<taskdep task="gfs_arch_vrfy"/>
+					<metataskdep metatask="gfs_arch_tars"/>
+				</and>
+			</or>
 		</and>
 	</dependency>
 
@@ -1474,8 +1478,12 @@
 
 	<dependency>
 		<and>
-			<taskdep task="enkfgfs_earc_vrfy"/>
-			<metataskdep metatask="enkfgfs_earc_tars"/>
+			<or>
+				<and>
+					<taskdep task="enkfgfs_earc_vrfy"/>
+					<metataskdep metatask="enkfgfs_earc_tars"/>
+				</and>
+			</or>
 		</and>
 	</dependency>
 
@@ -2478,7 +2486,7 @@
 
 </metatask>
 
-<task name="gdas_cleanup" cycledefs="gdas" maxtries="&MAXTRIES;">
+<task name="gdas_cleanup" cycledefs="gdas_half, gdas" maxtries="&MAXTRIES;">
 
 	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/cleanup.sh</command>
 
@@ -2510,16 +2518,23 @@
 				<taskdep task="gfs_fcst_seg0" cycle_offset="06:00:00"/>
 				<not><cycleexistdep cycle_offset="06:00:00"/></not>
 			</or>
-			<taskdep task="gdas_atmanlprod"/>
-			<taskdep task="gdas_fit2obs"/>
-			<taskdep task="gdas_verfozn"/>
-			<taskdep task="gdas_verfrad"/>
-			<taskdep task="gdas_vminmon"/>
 			<metataskdep metatask="gdas_atmos_prod"/>
-			<metataskdep metatask="gdas_wavepostsbs"/>
-			<taskdep task="gdas_wavepostpnt"/>
-			<taskdep task="gdas_arch_vrfy"/>
-			<metataskdep metatask="gdas_arch_tars"/>
+			<or>
+				<and>
+					<taskdep task="gdas_atmanlprod"/>
+					<taskdep task="gdas_fit2obs"/>
+					<taskdep task="gdas_verfozn"/>
+					<taskdep task="gdas_verfrad"/>
+					<taskdep task="gdas_vminmon"/>
+					<metataskdep metatask="gdas_wavepostsbs"/>
+					<taskdep task="gdas_wavepostpnt"/>
+					<taskdep task="gdas_arch_vrfy"/>
+					<metataskdep metatask="gdas_arch_tars"/>
+				</and>
+				<and>
+					<streq><left><cyclestr>@Y@m@d@H</cyclestr></left><right>2021122012</right></streq>
+				</and>
+			</or>
 		</and>
 	</dependency>
 
@@ -2995,7 +3010,7 @@
 
 </metatask>
 
-<task name="enkfgdas_cleanup" cycledefs="gdas" maxtries="&MAXTRIES;">
+<task name="enkfgdas_cleanup" cycledefs="gdas_half, gdas" maxtries="&MAXTRIES;">
 
 	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/cleanup.sh</command>
 
@@ -3023,11 +3038,18 @@
 
 	<dependency>
 		<and>
-			<taskdep task="enkfgdas_earc_vrfy"/>
-			<metataskdep metatask="enkfgdas_earc_tars"/>
 			<or>
 				<taskdep task="gfs_fcst_seg0" cycle_offset="06:00:00"/>
 				<not><cycleexistdep cycle_offset="06:00:00"/></not>
+			</or>
+			<or>
+				<and>
+					<taskdep task="enkfgdas_earc_vrfy"/>
+					<metataskdep metatask="enkfgdas_earc_tars"/>
+				</and>
+				<and>
+					<streq><left><cyclestr>@Y@m@d@H</cyclestr></left><right>2021122012</right></streq>
+				</and>
 			</or>
 		</and>
 	</dependency>

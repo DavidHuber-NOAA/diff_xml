@@ -6,7 +6,7 @@
 		Main workflow manager for Global Forecast System
 
 	NOTES:
-		This workflow was automatically generated at 2025-12-16 18:56:58.407592
+		This workflow was automatically generated at 2025-12-16 18:56:12.868687
 	-->
 	<!ENTITY PSLOT "C48_ATM">
 	<!ENTITY ROTDIR "/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C48_ATM">
@@ -306,11 +306,15 @@
 
 	<dependency>
 		<and>
-			<taskdep task="gfs_tracker"/>
-			<taskdep task="gfs_genesis"/>
 			<metataskdep metatask="gfs_atmos_prod"/>
-			<taskdep task="gfs_arch_vrfy"/>
-			<metataskdep metatask="gfs_arch_tars"/>
+			<or>
+				<and>
+					<taskdep task="gfs_tracker"/>
+					<taskdep task="gfs_genesis"/>
+					<taskdep task="gfs_arch_vrfy"/>
+					<metataskdep metatask="gfs_arch_tars"/>
+				</and>
+			</or>
 		</and>
 	</dependency>
 
