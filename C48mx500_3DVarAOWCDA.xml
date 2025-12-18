@@ -6,7 +6,7 @@
 		Main workflow manager for Global Forecast System
 
 	NOTES:
-		This workflow was automatically generated at 2025-12-18 09:21:41.309963
+		This workflow was automatically generated at 2025-12-18 09:07:11.340402
 	-->
 	<!ENTITY PSLOT "C48mx500_3DVarAOWCDA">
 	<!ENTITY ROTDIR "C48mx500_3DVarAOWCDA">
@@ -1021,11 +1021,11 @@
 
 	<dependency>
 		<and>
+			<metataskdep metatask="gfs_atmos_prod"/>
 			<taskdep task="gfs_atmanlprod"/>
 			<taskdep task="gfs_vminmon"/>
 			<taskdep task="gfs_tracker"/>
 			<taskdep task="gfs_genesis"/>
-			<metataskdep metatask="gfs_atmos_prod"/>
 			<metataskdep metatask="gfs_wavepostsbs"/>
 			<taskdep task="gfs_wavepostpnt"/>
 			<taskdep task="gfs_wavepostbndpnt"/>
@@ -1975,7 +1975,7 @@
 
 </metatask>
 
-<task name="gdas_cleanup" cycledefs="gdas" maxtries="&MAXTRIES;">
+<task name="gdas_cleanup" cycledefs="gdas_half, gdas" maxtries="&MAXTRIES;">
 
 	<command>homegfsdev/job_cards/rocoto/cleanup.sh</command>
 
@@ -2006,16 +2006,21 @@
 				<taskdep task="gfs_fcst_seg0" cycle_offset="06:00:00"/>
 				<not><cycleexistdep cycle_offset="06:00:00"/></not>
 			</or>
-			<taskdep task="gdas_atmanlprod"/>
-			<taskdep task="gdas_fit2obs"/>
-			<taskdep task="gdas_verfozn"/>
-			<taskdep task="gdas_verfrad"/>
-			<taskdep task="gdas_vminmon"/>
 			<metataskdep metatask="gdas_atmos_prod"/>
-			<metataskdep metatask="gdas_wavepostsbs"/>
-			<taskdep task="gdas_wavepostpnt"/>
-			<taskdep task="gdas_arch_vrfy"/>
-			<metataskdep metatask="gdas_arch_tars"/>
+			<or>
+				<streq><left><cyclestr>@Y@m@d@H</cyclestr></left><right>2021032418</right></streq>
+				<and>
+					<taskdep task="gdas_atmanlprod"/>
+					<taskdep task="gdas_fit2obs"/>
+					<taskdep task="gdas_verfozn"/>
+					<taskdep task="gdas_verfrad"/>
+					<taskdep task="gdas_vminmon"/>
+					<metataskdep metatask="gdas_wavepostsbs"/>
+					<taskdep task="gdas_wavepostpnt"/>
+					<taskdep task="gdas_arch_vrfy"/>
+					<metataskdep metatask="gdas_arch_tars"/>
+				</and>
+			</or>
 		</and>
 	</dependency>
 

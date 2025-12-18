@@ -6,7 +6,7 @@
 		Main workflow manager for Global Forecast System
 
 	NOTES:
-		This workflow was automatically generated at 2025-12-18 09:21:47.866299
+		This workflow was automatically generated at 2025-12-18 09:07:17.712740
 	-->
 	<!ENTITY PSLOT "C48_S2SW">
 	<!ENTITY ROTDIR "C48_S2SW">
@@ -568,9 +568,9 @@
 
 	<dependency>
 		<and>
+			<metataskdep metatask="gfs_atmos_prod"/>
 			<taskdep task="gfs_tracker"/>
 			<taskdep task="gfs_genesis"/>
-			<metataskdep metatask="gfs_atmos_prod"/>
 			<metataskdep metatask="gfs_wavepostsbs"/>
 			<taskdep task="gfs_wavepostpnt"/>
 			<taskdep task="gfs_wavepostbndpnt"/>
