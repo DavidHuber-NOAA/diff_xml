@@ -6,7 +6,7 @@
 		Main workflow manager for Global Forecast System
 
 	NOTES:
-		This workflow was automatically generated at 2025-12-18 09:49:49.878469
+		This workflow was automatically generated at 2025-12-18 09:48:08.418027
 	-->
 	<!ENTITY PSLOT "C96C48_hybatmDA">
 	<!ENTITY ROTDIR "COMROOT/C96C48_hybatmDA">
@@ -620,7 +620,7 @@
 
 </metatask>
 
-<task name="gdas_cleanup" cycledefs="gdas" maxtries="&MAXTRIES;">
+<task name="gdas_cleanup" cycledefs="gdas_half, gdas" maxtries="&MAXTRIES;">
 
 	<command>/homegfs/dev/job_cards/rocoto/cleanup.sh</command>
 
@@ -647,14 +647,19 @@
 
 	<dependency>
 		<and>
-			<taskdep task="gdas_atmanlprod"/>
-			<taskdep task="gdas_fit2obs"/>
-			<taskdep task="gdas_verfozn"/>
-			<taskdep task="gdas_verfrad"/>
-			<taskdep task="gdas_vminmon"/>
 			<metataskdep metatask="gdas_atmos_prod"/>
-			<taskdep task="gdas_arch_vrfy"/>
-			<metataskdep metatask="gdas_arch_tars"/>
+			<or>
+				<streq><left><cyclestr>@Y@m@d@H</cyclestr></left><right>2021122018</right></streq>
+				<and>
+					<taskdep task="gdas_atmanlprod"/>
+					<taskdep task="gdas_fit2obs"/>
+					<taskdep task="gdas_verfozn"/>
+					<taskdep task="gdas_verfrad"/>
+					<taskdep task="gdas_vminmon"/>
+					<taskdep task="gdas_arch_vrfy"/>
+					<metataskdep metatask="gdas_arch_tars"/>
+				</and>
+			</or>
 		</and>
 	</dependency>
 
@@ -1057,7 +1062,7 @@
 
 </metatask>
 
-<task name="enkfgdas_cleanup" cycledefs="gdas" maxtries="&MAXTRIES;">
+<task name="enkfgdas_cleanup" cycledefs="gdas_half, gdas" maxtries="&MAXTRIES;">
 
 	<command>/homegfs/dev/job_cards/rocoto/cleanup.sh</command>
 
@@ -1084,8 +1089,17 @@
 
 	<dependency>
 		<and>
-			<taskdep task="enkfgdas_earc_vrfy"/>
-			<metataskdep metatask="enkfgdas_earc_tars"/>
+			<or>
+				<and>
+					<streq><left><cyclestr>@Y@m@d@H</cyclestr></left><right>2021122018</right></streq>
+					<metataskdep metatask="enkfgdas_epmn"/>
+					<taskdep task="enkfgdas_echgres"/>
+				</and>
+				<and>
+					<taskdep task="enkfgdas_earc_vrfy"/>
+					<metataskdep metatask="enkfgdas_earc_tars"/>
+				</and>
+			</or>
 		</and>
 	</dependency>
 
