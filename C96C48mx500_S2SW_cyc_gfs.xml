@@ -6,16 +6,16 @@
 		Main workflow manager for Global Forecast System
 
 	NOTES:
-		This workflow was automatically generated at 2025-12-16 20:07:09.790777
+		This workflow was automatically generated at 2025-12-18 09:22:17.288184
 	-->
 	<!ENTITY PSLOT "C96C48mx500_S2SW_cyc_gfs">
-	<!ENTITY ROTDIR "/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs">
+	<!ENTITY ROTDIR "C96C48mx500_S2SW_cyc_gfs">
 	<!ENTITY MAXTRIES "2">
 ]>
 
 <workflow realtime="F" scheduler="slurm" cyclethrottle="3" taskthrottle="25">
 
-	<log verbosity="10"><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H.log</cyclestr></log>
+	<log verbosity="10"><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H.log</cyclestr></log>
 
 	<!-- Define the cycles -->
 	<cycledef group="gdas_half">202112201200 202112201200 06:00:00</cycledef>
@@ -25,35 +25,34 @@
 
 <task name="gfs_prep" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/prep.sh</command>
+	<command>homegfsdev/job_cards/rocoto/prep.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_prep_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>14</cores>
-	<memory>360GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_prep.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_prep.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
 			<metataskdep metatask="gdas_atmos_prod" cycle_offset="-06:00:00"/>
 			<datadep><cyclestr offset="-06:00:00">&ROTDIR;/gdas.@Y@m@d/@H//model/atmos/history/gdas.t@Hz.atm.f009.nc</cyclestr></datadep>
-			<datadep><cyclestr>/scratch3/NCEPDEV/global/role.glopara/dump/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.updated.status.tm00.bufr_d</cyclestr></datadep>
+			<datadep><cyclestr>/gpfs/f6/drsa-precip3/world-shared/role.glopara/dump/gfs.@Y@m@d/@H/atmos/gfs.t@Hz.updated.status.tm00.bufr_d</cyclestr></datadep>
 			<metataskdep metatask="gdas_fcst" cycle_offset="-06:00:00"/>
 		</and>
 	</dependency>
@@ -62,28 +61,28 @@
 
 <task name="gfs_anal" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/anal.sh</command>
+	<command>homegfsdev/job_cards/rocoto/anal.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_anal_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>01:20:00</walltime>
 	<nodes>3:ppn=38:tpp=5</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_anal.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_anal.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -96,29 +95,28 @@
 
 <task name="gfs_analcalc" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/analcalc.sh</command>
+	<command>homegfsdev/job_cards/rocoto/analcalc.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_analcalc_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>192</cores>
-	<memory>48GB</memory>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_analcalc.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_analcalc.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -131,35 +129,34 @@
 
 <task name="gfs_prepoceanobs" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/prepoceanobs.sh</command>
+	<command>homegfsdev/job_cards/rocoto/prepoceanobs.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_prepoceanobs_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>48GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_prepoceanobs.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_prepoceanobs.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
 			<datadep><cyclestr offset="-06:00:00">&ROTDIR;/gdas.@Y@m@d/@H//model/ocean/history/gdas.t@Hz.inst.f009.nc</cyclestr></datadep>
-			<datadep><cyclestr>/scratch3/NCEPDEV/global/role.glopara/data/experimental_obs/gfs.@Y@m@d/@H/ocean/gfs.t@Hz.obsforge_marine_status.log</cyclestr></datadep>
-			<datadep><cyclestr>/scratch3/NCEPDEV/global/role.glopara/data/experimental_obs/gfs.@Y@m@d/@H/ocean/insitu/gfs.t@Hz.obsforge_marine_bufr_status.log</cyclestr></datadep>
+			<datadep><cyclestr>/gpfs/f6/drsa-precip3/world-shared/role.glopara/data/experimental_obs/gfs.@Y@m@d/@H/ocean/gfs.t@Hz.obsforge_marine_status.log</cyclestr></datadep>
+			<datadep><cyclestr>/gpfs/f6/drsa-precip3/world-shared/role.glopara/data/experimental_obs/gfs.@Y@m@d/@H/ocean/insitu/gfs.t@Hz.obsforge_marine_bufr_status.log</cyclestr></datadep>
 		</and>
 	</dependency>
 
@@ -167,29 +164,28 @@
 
 <task name="gfs_marinebmatinit" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marinebmatinit.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marinebmatinit.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_marinebmatinit_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:20:00</walltime>
 	<cores>192</cores>
-	<memory>24GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marinebmatinit.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marinebmatinit.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -202,28 +198,28 @@
 
 <task name="gfs_marinebmat" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marinebmat.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marinebmat.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_marinebmat_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>96</cores>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marinebmat.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marinebmat.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gfs_marinebmatinit"/>
@@ -233,29 +229,28 @@
 
 <task name="gfs_marineanlinit" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlinit.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlinit.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_marineanlinit_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>24GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlinit.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlinit.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -269,29 +264,28 @@
 
 <task name="gfs_marineanlvar" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlvar.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlvar.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_marineanlvar_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>96</cores>
-	<memory>24GB</memory>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlvar.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlvar.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gfs_marineanlinit"/>
@@ -301,29 +295,28 @@
 
 <task name="gfs_marineanlchkpt" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlchkpt.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlchkpt.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_marineanlchkpt_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>32GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlchkpt.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlchkpt.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -336,28 +329,28 @@
 
 <task name="gfs_marineanlfinal" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlfinal.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlfinal.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_marineanlfinal_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>192</cores>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlfinal.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_marineanlfinal.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gfs_marineanlchkpt"/>
@@ -367,28 +360,28 @@
 
 <task name="gfs_sfcanl" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/sfcanl.sh</command>
+	<command>homegfsdev/job_cards/rocoto/sfcanl.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_sfcanl_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:20:00</walltime>
 	<nodes>1:ppn=48:tpp=4</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_sfcanl.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_sfcanl.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -401,28 +394,28 @@
 
 <task name="gfs_snowanl" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/snowanl.sh</command>
+	<command>homegfsdev/job_cards/rocoto/snowanl.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_snowanl_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_snowanl.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_snowanl.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gfs_prep"/>
@@ -432,29 +425,28 @@
 
 <task name="gfs_waveinit" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/waveinit.sh</command>
+	<command>homegfsdev/job_cards/rocoto/waveinit.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_waveinit_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>4GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_waveinit.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_waveinit.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<or>
@@ -466,28 +458,28 @@
 
 <task name="gfs_atmanlupp" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/upp.sh</command>
+	<command>homegfsdev/job_cards/rocoto/upp.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_atmanlupp_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>48</cores>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_atmanlupp.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_atmanlupp.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>FHR3</name><value>000</value></envar>
 	<envar><name>UPP_RUN</name><value>analysis</value></envar>
 
@@ -503,28 +495,28 @@
 
 <task name="gfs_atmanlprod" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/atmos_products.sh</command>
+	<command>homegfsdev/job_cards/rocoto/atmos_products.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_atmanlprod_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>24</cores>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_atmanlprod.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_atmanlprod.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>FHR_LIST</name><value>-1</value></envar>
 
 	<dependency>
@@ -539,28 +531,28 @@
 
 	<task name="gfs_fcst_seg#seg#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/fcst.sh</command>
+		<command>homegfsdev/job_cards/rocoto/fcst.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_fcst_seg#seg#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>03:00:00</walltime>
 		<cores>192</cores>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_fcst_seg#seg#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_fcst_seg#seg#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FCST_SEGMENT</name><value>#seg#</value></envar>
 
 		<dependency>
@@ -594,29 +586,28 @@
 
 	<task name="gfs_ocean_prod_#fhr_label#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/oceanice_products.sh</command>
+		<command>homegfsdev/job_cards/rocoto/oceanice_products.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_ocean_prod_#fhr_label#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:15:00</walltime>
 		<cores>1</cores>
-		<memory>96GB</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_ocean_prod_#fhr_label#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_ocean_prod_#fhr_label#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHR_LIST</name><value>#fhr_list#</value></envar>
 		<envar><name>COMPONENT</name><value>ocean</value></envar>
 
@@ -641,29 +632,28 @@
 
 	<task name="gfs_ice_prod_#fhr_label#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/oceanice_products.sh</command>
+		<command>homegfsdev/job_cards/rocoto/oceanice_products.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_ice_prod_#fhr_label#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:15:00</walltime>
 		<cores>1</cores>
-		<memory>96GB</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_ice_prod_#fhr_label#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_ice_prod_#fhr_label#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHR_LIST</name><value>#fhr_list#</value></envar>
 		<envar><name>COMPONENT</name><value>ice</value></envar>
 
@@ -688,28 +678,28 @@
 
 	<task name="gfs_atmos_prod_#fhr_label#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/atmos_products.sh</command>
+		<command>homegfsdev/job_cards/rocoto/atmos_products.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_atmos_prod_#fhr_label#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:45:00</walltime>
 		<cores>24</cores>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_atmos_prod_#fhr_label#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_atmos_prod_#fhr_label#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHR_LIST</name><value>#fhr_list#</value></envar>
 		<envar><name>COMPONENT</name><value>atmos</value></envar>
 
@@ -726,29 +716,28 @@
 
 <task name="gfs_vminmon" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/vminmon.sh</command>
+	<command>homegfsdev/job_cards/rocoto/vminmon.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_vminmon_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:05:00</walltime>
 	<cores>1</cores>
-	<memory>1G</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_vminmon.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_vminmon.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gfs_anal"/>
@@ -758,29 +747,28 @@
 
 <task name="gfs_tracker" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/tracker.sh</command>
+	<command>homegfsdev/job_cards/rocoto/tracker.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_tracker_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>1</cores>
-	<memory>6G</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_tracker.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_tracker.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<metataskdep metatask="gfs_atmos_prod"/>
@@ -790,29 +778,28 @@
 
 <task name="gfs_genesis" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/genesis.sh</command>
+	<command>homegfsdev/job_cards/rocoto/genesis.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_genesis_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:40:00</walltime>
 	<cores>1</cores>
-	<memory>20G</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_genesis.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_genesis.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<metataskdep metatask="gfs_atmos_prod"/>
@@ -830,29 +817,28 @@
 
 	<task name="gfs_wavepostsbs_#fhr_label#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/wavepostsbs.sh</command>
+		<command>homegfsdev/job_cards/rocoto/wavepostsbs.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_wavepostsbs_#fhr_label#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:45:00</walltime>
 		<cores>192</cores>
-		<memory>20GB</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostsbs_#fhr_label#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostsbs_#fhr_label#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHR_LIST</name><value>#fhr_list#</value></envar>
 
 		<dependency>
@@ -865,28 +851,28 @@
 
 <task name="gfs_wavepostbndpnt" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/wavepostbndpnt.sh</command>
+	<command>homegfsdev/job_cards/rocoto/wavepostbndpnt.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_wavepostbndpnt_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
-	<walltime>00:30:00</walltime>
-	<cores>40</cores>
-	<native>--export=NONE</native>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
+	<walltime>01:30:00</walltime>
+	<cores>192</cores>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostbndpnt.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostbndpnt.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<datadep><cyclestr>&ROTDIR;/gfs.@Y@m@d/@H//model/wave/history/gfs.t@Hz.points.f120.log</cyclestr></datadep>
@@ -896,28 +882,28 @@
 
 <task name="gfs_wavepostbndpntbll" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/wavepostbndpntbll.sh</command>
+	<command>homegfsdev/job_cards/rocoto/wavepostbndpntbll.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_wavepostbndpntbll_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
-	<walltime>00:15:00</walltime>
-	<cores>40</cores>
-	<native>--export=NONE</native>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
+	<walltime>00:25:00</walltime>
+	<cores>192</cores>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostbndpntbll.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostbndpntbll.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<datadep><cyclestr>&ROTDIR;/gfs.@Y@m@d/@H//model/wave/history/gfs.t@Hz.points.f120.log</cyclestr></datadep>
@@ -927,28 +913,28 @@
 
 <task name="gfs_wavepostpnt" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/wavepostpnt.sh</command>
+	<command>homegfsdev/job_cards/rocoto/wavepostpnt.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_wavepostpnt_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
-	<walltime>00:35:00</walltime>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
+	<walltime>00:45:00</walltime>
 	<cores>40</cores>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostpnt.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_wavepostpnt.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<metataskdep metatask="gfs_fcst"/>
@@ -958,29 +944,28 @@
 
 <task name="gfs_arch_vrfy" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/arch_vrfy.sh</command>
+	<command>homegfsdev/job_cards/rocoto/arch_vrfy.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_arch_vrfy_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-service</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_arch_vrfy.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_arch_vrfy.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1005,29 +990,28 @@
 
 	<task name="gfs_arch_tar_#tartype#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/arch_tars.sh</command>
+		<command>homegfsdev/job_cards/rocoto/arch_tars.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_arch_tar_#tartype#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-service</partition>
+		<account>drsa-precip3</account>
+		<queue>hpss</queue>
+		<partition>dtn_f5_f6</partition>
 		<walltime>06:00:00</walltime>
 		<cores>1</cores>
-		<memory>4096M</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=es</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_arch_tar_#tartype#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_arch_tar_#tartype#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>TARBALL_TYPE</name><value>#tartype#</value></envar>
 
 		<dependency>
@@ -1053,37 +1037,36 @@
 
 <task name="gfs_cleanup" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/cleanup.sh</command>
+	<command>homegfsdev/job_cards/rocoto/cleanup.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gfs_cleanup_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_cleanup.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gfs_cleanup.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
-			<metataskdep metatask="gfs_atmos_prod"/>
 			<taskdep task="gfs_atmanlprod"/>
 			<taskdep task="gfs_vminmon"/>
 			<taskdep task="gfs_tracker"/>
 			<taskdep task="gfs_genesis"/>
+			<metataskdep metatask="gfs_atmos_prod"/>
 			<metataskdep metatask="gfs_wavepostsbs"/>
 			<taskdep task="gfs_wavepostpnt"/>
 			<taskdep task="gfs_wavepostbndpnt"/>
@@ -1099,56 +1082,55 @@
 
 <task name="enkfgfs_stage_ic" cycledefs="enkfgfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/stage_ic.sh</command>
+	<command>homegfsdev/job_cards/rocoto/stage_ic.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_stage_ic_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-service</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_stage_ic.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_stage_ic.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 </task>
 
 <task name="enkfgfs_eobs" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/eobs.sh</command>
+	<command>homegfsdev/job_cards/rocoto/eobs.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_eobs_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_eobs.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_eobs.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1161,28 +1143,28 @@
 
 <task name="enkfgfs_eupd" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/eupd.sh</command>
+	<command>homegfsdev/job_cards/rocoto/eupd.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_eupd_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:45:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_eupd.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_eupd.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="enkfgfs_ediag"/>
@@ -1198,28 +1180,28 @@
 
 	<task name="enkfgfs_ecen#grp#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/ecen.sh</command>
+		<command>homegfsdev/job_cards/rocoto/ecen.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_ecen#grp#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:20:00</walltime>
 		<nodes>1:ppn=96:tpp=2</nodes>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_ecen#grp#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_ecen#grp#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>enkfgfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHRGRP</name><value>#grp#</value></envar>
 		<envar><name>FHRLST</name><value>#lst#</value></envar>
 
@@ -1236,29 +1218,28 @@
 
 <task name="enkfgfs_ediag" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/ediag.sh</command>
+	<command>homegfsdev/job_cards/rocoto/ediag.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_ediag_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>192</cores>
-	<memory>48GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_ediag.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_ediag.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="enkfgfs_eobs"/>
@@ -1268,29 +1249,28 @@
 
 <task name="enkfgfs_marineanlecen" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlecen.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlecen.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_marineanlecen_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>96</cores>
-	<memory>24GB</memory>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_marineanlecen.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_marineanlecen.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gfs_marinebmatinit"/>
@@ -1300,28 +1280,28 @@
 
 <task name="enkfgfs_esnowanl" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/esnowanl.sh</command>
+	<command>homegfsdev/job_cards/rocoto/esnowanl.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_esnowanl_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_esnowanl.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_esnowanl.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1334,28 +1314,28 @@
 
 <task name="enkfgfs_esfc" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/esfc.sh</command>
+	<command>homegfsdev/job_cards/rocoto/esfc.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_esfc_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>01:15:00</walltime>
 	<cores>96</cores>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_esfc.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_esfc.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1369,29 +1349,28 @@
 
 <task name="enkfgfs_earc_vrfy" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/earc_vrfy.sh</command>
+	<command>homegfsdev/job_cards/rocoto/earc_vrfy.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_earc_vrfy_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-service</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_earc_vrfy.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_earc_vrfy.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>ENSGRP</name><value>#grp#</value></envar>
 
 	<dependency>
@@ -1408,29 +1387,28 @@
 
 	<task name="enkfgfs_earc_tars_#grp#" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/earc_tars.sh</command>
+		<command>homegfsdev/job_cards/rocoto/earc_tars.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_earc_tars_#grp#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-service</partition>
+		<account>drsa-precip3</account>
+		<queue>hpss</queue>
+		<partition>dtn_f5_f6</partition>
 		<walltime>06:00:00</walltime>
 		<cores>1</cores>
-		<memory>4096M</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=es</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_earc_tars_#grp#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_earc_tars_#grp#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>enkfgfs</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>ENSGRP</name><value>#grp#</value></envar>
 
 		<dependency>
@@ -1448,29 +1426,28 @@
 
 <task name="enkfgfs_cleanup" cycledefs="gfs" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/cleanup.sh</command>
+	<command>homegfsdev/job_cards/rocoto/cleanup.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgfs_cleanup_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_cleanup.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgfs_cleanup.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgfs</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgfs.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1483,35 +1460,34 @@
 
 <task name="gdas_prep" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/prep.sh</command>
+	<command>homegfsdev/job_cards/rocoto/prep.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_prep_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>14</cores>
-	<memory>360GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_prep.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_prep.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
 			<metataskdep metatask="gdas_atmos_prod" cycle_offset="-06:00:00"/>
 			<datadep><cyclestr offset="-06:00:00">&ROTDIR;/gdas.@Y@m@d/@H//model/atmos/history/gdas.t@Hz.atm.f009.nc</cyclestr></datadep>
-			<datadep><cyclestr>/scratch3/NCEPDEV/global/role.glopara/dump/gdas.@Y@m@d/@H/atmos/gdas.t@Hz.updated.status.tm00.bufr_d</cyclestr></datadep>
+			<datadep><cyclestr>/gpfs/f6/drsa-precip3/world-shared/role.glopara/dump/gdas.@Y@m@d/@H/atmos/gdas.t@Hz.updated.status.tm00.bufr_d</cyclestr></datadep>
 			<metataskdep metatask="gdas_fcst" cycle_offset="-06:00:00"/>
 		</and>
 	</dependency>
@@ -1520,28 +1496,28 @@
 
 <task name="gdas_anal" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/anal.sh</command>
+	<command>homegfsdev/job_cards/rocoto/anal.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_anal_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>01:20:00</walltime>
 	<nodes>3:ppn=38:tpp=5</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_anal.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_anal.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1554,29 +1530,28 @@
 
 <task name="gdas_analcalc" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/analcalc.sh</command>
+	<command>homegfsdev/job_cards/rocoto/analcalc.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_analcalc_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>192</cores>
-	<memory>48GB</memory>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_analcalc.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_analcalc.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1590,35 +1565,34 @@
 
 <task name="gdas_prepoceanobs" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/prepoceanobs.sh</command>
+	<command>homegfsdev/job_cards/rocoto/prepoceanobs.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_prepoceanobs_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>48GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_prepoceanobs.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_prepoceanobs.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
 			<datadep><cyclestr offset="-06:00:00">&ROTDIR;/gdas.@Y@m@d/@H//model/ocean/history/gdas.t@Hz.inst.f009.nc</cyclestr></datadep>
-			<datadep><cyclestr>/scratch3/NCEPDEV/global/role.glopara/data/experimental_obs/gdas.@Y@m@d/@H/ocean/gdas.t@Hz.obsforge_marine_status.log</cyclestr></datadep>
-			<datadep><cyclestr>/scratch3/NCEPDEV/global/role.glopara/data/experimental_obs/gdas.@Y@m@d/@H/ocean/insitu/gdas.t@Hz.obsforge_marine_bufr_status.log</cyclestr></datadep>
+			<datadep><cyclestr>/gpfs/f6/drsa-precip3/world-shared/role.glopara/data/experimental_obs/gdas.@Y@m@d/@H/ocean/gdas.t@Hz.obsforge_marine_status.log</cyclestr></datadep>
+			<datadep><cyclestr>/gpfs/f6/drsa-precip3/world-shared/role.glopara/data/experimental_obs/gdas.@Y@m@d/@H/ocean/insitu/gdas.t@Hz.obsforge_marine_bufr_status.log</cyclestr></datadep>
 		</and>
 	</dependency>
 
@@ -1626,29 +1600,28 @@
 
 <task name="gdas_marinebmatinit" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marinebmatinit.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marinebmatinit.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_marinebmatinit_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:20:00</walltime>
 	<cores>192</cores>
-	<memory>24GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marinebmatinit.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marinebmatinit.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1661,28 +1634,28 @@
 
 <task name="gdas_marinebmat" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marinebmat.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marinebmat.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_marinebmat_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>96</cores>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marinebmat.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marinebmat.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_marinebmatinit"/>
@@ -1692,29 +1665,28 @@
 
 <task name="gdas_marineanlinit" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlinit.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlinit.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_marineanlinit_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>24GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlinit.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlinit.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1728,29 +1700,28 @@
 
 <task name="gdas_marineanlvar" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlvar.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlvar.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_marineanlvar_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>96</cores>
-	<memory>24GB</memory>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlvar.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlvar.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_marineanlinit"/>
@@ -1760,29 +1731,28 @@
 
 <task name="gdas_marineanlchkpt" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlchkpt.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlchkpt.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_marineanlchkpt_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>32GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlchkpt.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlchkpt.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1795,28 +1765,28 @@
 
 <task name="gdas_marineanlfinal" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlfinal.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlfinal.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_marineanlfinal_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>192</cores>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlfinal.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_marineanlfinal.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_marineanlchkpt"/>
@@ -1826,28 +1796,28 @@
 
 <task name="gdas_sfcanl" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/sfcanl.sh</command>
+	<command>homegfsdev/job_cards/rocoto/sfcanl.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_sfcanl_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:20:00</walltime>
 	<nodes>1:ppn=48:tpp=4</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_sfcanl.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_sfcanl.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1861,28 +1831,28 @@
 
 <task name="gdas_snowanl" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/snowanl.sh</command>
+	<command>homegfsdev/job_cards/rocoto/snowanl.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_snowanl_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_snowanl.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_snowanl.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_prep"/>
@@ -1892,29 +1862,28 @@
 
 <task name="gdas_analdiag" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/analdiag.sh</command>
+	<command>homegfsdev/job_cards/rocoto/analdiag.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_analdiag_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>192</cores>
-	<memory>48GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_analdiag.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_analdiag.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -1926,29 +1895,28 @@
 
 <task name="gdas_waveinit" cycledefs="gdas_half,gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/waveinit.sh</command>
+	<command>homegfsdev/job_cards/rocoto/waveinit.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_waveinit_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>192</cores>
-	<memory>4GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_waveinit.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_waveinit.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<or>
@@ -1961,56 +1929,55 @@
 
 <task name="gdas_stage_ic" cycledefs="gdas_half" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/stage_ic.sh</command>
+	<command>homegfsdev/job_cards/rocoto/stage_ic.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_stage_ic_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-service</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_stage_ic.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_stage_ic.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 </task>
 
 <task name="gdas_atmanlupp" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/upp.sh</command>
+	<command>homegfsdev/job_cards/rocoto/upp.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_atmanlupp_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>48</cores>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_atmanlupp.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_atmanlupp.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>FHR3</name><value>000</value></envar>
 	<envar><name>UPP_RUN</name><value>analysis</value></envar>
 
@@ -2026,28 +1993,28 @@
 
 <task name="gdas_atmanlprod" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/atmos_products.sh</command>
+	<command>homegfsdev/job_cards/rocoto/atmos_products.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_atmanlprod_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>24</cores>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_atmanlprod.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_atmanlprod.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>FHR_LIST</name><value>-1</value></envar>
 
 	<dependency>
@@ -2062,28 +2029,28 @@
 
 	<task name="gdas_fcst_seg#seg#" cycledefs="gdas_half,gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/fcst.sh</command>
+		<command>homegfsdev/job_cards/rocoto/fcst.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_fcst_seg#seg#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:20:00</walltime>
 		<cores>192</cores>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_fcst_seg#seg#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_fcst_seg#seg#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FCST_SEGMENT</name><value>#seg#</value></envar>
 
 		<dependency>
@@ -2116,28 +2083,28 @@
 
 	<task name="gdas_atmos_prod_#fhr_label#" cycledefs="gdas_half,gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/atmos_products.sh</command>
+		<command>homegfsdev/job_cards/rocoto/atmos_products.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_atmos_prod_#fhr_label#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:15:00</walltime>
 		<cores>24</cores>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_atmos_prod_#fhr_label#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_atmos_prod_#fhr_label#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHR_LIST</name><value>#fhr_list#</value></envar>
 		<envar><name>COMPONENT</name><value>atmos</value></envar>
 
@@ -2154,29 +2121,28 @@
 
 <task name="gdas_fit2obs" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/fit2obs.sh</command>
+	<command>homegfsdev/job_cards/rocoto/fit2obs.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_fit2obs_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:20:00</walltime>
 	<nodes>3:ppn=1:tpp=1</nodes>
-	<memory>20GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_fit2obs.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_fit2obs.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<metataskdep metatask="gdas_atmos_prod"/>
@@ -2186,29 +2152,28 @@
 
 <task name="gdas_verfozn" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/verfozn.sh</command>
+	<command>homegfsdev/job_cards/rocoto/verfozn.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_verfozn_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>1</cores>
-	<memory>1G</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_verfozn.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_verfozn.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_analdiag"/>
@@ -2218,29 +2183,28 @@
 
 <task name="gdas_verfrad" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/verfrad.sh</command>
+	<command>homegfsdev/job_cards/rocoto/verfrad.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_verfrad_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:40:00</walltime>
 	<cores>1</cores>
-	<memory>10G</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_verfrad.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_verfrad.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_analdiag"/>
@@ -2250,29 +2214,28 @@
 
 <task name="gdas_anlstat" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/anlstat.sh</command>
+	<command>homegfsdev/job_cards/rocoto/anlstat.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_anlstat_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>20</cores>
-	<memory>150GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_anlstat.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_anlstat.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -2286,29 +2249,28 @@
 
 <task name="gdas_vminmon" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/vminmon.sh</command>
+	<command>homegfsdev/job_cards/rocoto/vminmon.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_vminmon_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:05:00</walltime>
 	<cores>1</cores>
-	<memory>1G</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_vminmon.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_vminmon.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_anal"/>
@@ -2326,29 +2288,28 @@
 
 	<task name="gdas_wavepostsbs_#fhr_label#" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/wavepostsbs.sh</command>
+		<command>homegfsdev/job_cards/rocoto/wavepostsbs.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_wavepostsbs_#fhr_label#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:15:00</walltime>
 		<cores>192</cores>
-		<memory>20GB</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_wavepostsbs_#fhr_label#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_wavepostsbs_#fhr_label#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHR_LIST</name><value>#fhr_list#</value></envar>
 
 		<dependency>
@@ -2361,28 +2322,28 @@
 
 <task name="gdas_wavepostpnt" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/wavepostpnt.sh</command>
+	<command>homegfsdev/job_cards/rocoto/wavepostpnt.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_wavepostpnt_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
-	<walltime>00:35:00</walltime>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
+	<walltime>00:45:00</walltime>
 	<cores>40</cores>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_wavepostpnt.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_wavepostpnt.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<metataskdep metatask="gdas_fcst"/>
@@ -2392,29 +2353,28 @@
 
 <task name="gdas_arch_vrfy" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/arch_vrfy.sh</command>
+	<command>homegfsdev/job_cards/rocoto/arch_vrfy.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_arch_vrfy_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-service</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_arch_vrfy.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_arch_vrfy.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -2434,29 +2394,28 @@
 
 	<task name="gdas_arch_tar_#tartype#" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/arch_tars.sh</command>
+		<command>homegfsdev/job_cards/rocoto/arch_tars.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_arch_tar_#tartype#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-service</partition>
+		<account>drsa-precip3</account>
+		<queue>hpss</queue>
+		<partition>dtn_f5_f6</partition>
 		<walltime>06:00:00</walltime>
 		<cores>1</cores>
-		<memory>4096M</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=es</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_arch_tar_#tartype#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_arch_tar_#tartype#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>gdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>TARBALL_TYPE</name><value>#tartype#</value></envar>
 
 		<dependency>
@@ -2478,31 +2437,30 @@
 
 </metatask>
 
-<task name="gdas_cleanup" cycledefs="gdas_half, gdas" maxtries="&MAXTRIES;">
+<task name="gdas_cleanup" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/cleanup.sh</command>
+	<command>homegfsdev/job_cards/rocoto/cleanup.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_gdas_cleanup_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_cleanup.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/gdas_cleanup.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>gdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/gdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -2510,21 +2468,16 @@
 				<taskdep task="gfs_fcst_seg0" cycle_offset="06:00:00"/>
 				<not><cycleexistdep cycle_offset="06:00:00"/></not>
 			</or>
+			<taskdep task="gdas_atmanlprod"/>
+			<taskdep task="gdas_fit2obs"/>
+			<taskdep task="gdas_verfozn"/>
+			<taskdep task="gdas_verfrad"/>
+			<taskdep task="gdas_vminmon"/>
 			<metataskdep metatask="gdas_atmos_prod"/>
-			<or>
-				<streq><left><cyclestr>@Y@m@d@H</cyclestr></left><right>2021122012</right></streq>
-				<and>
-					<taskdep task="gdas_atmanlprod"/>
-					<taskdep task="gdas_fit2obs"/>
-					<taskdep task="gdas_verfozn"/>
-					<taskdep task="gdas_verfrad"/>
-					<taskdep task="gdas_vminmon"/>
-					<metataskdep metatask="gdas_wavepostsbs"/>
-					<taskdep task="gdas_wavepostpnt"/>
-					<taskdep task="gdas_arch_vrfy"/>
-					<metataskdep metatask="gdas_arch_tars"/>
-				</and>
-			</or>
+			<metataskdep metatask="gdas_wavepostsbs"/>
+			<taskdep task="gdas_wavepostpnt"/>
+			<taskdep task="gdas_arch_vrfy"/>
+			<metataskdep metatask="gdas_arch_tars"/>
 		</and>
 	</dependency>
 
@@ -2532,56 +2485,55 @@
 
 <task name="enkfgdas_stage_ic" cycledefs="gdas_half" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/stage_ic.sh</command>
+	<command>homegfsdev/job_cards/rocoto/stage_ic.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_stage_ic_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-service</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_stage_ic.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_stage_ic.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 </task>
 
 <task name="enkfgdas_eobs" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/eobs.sh</command>
+	<command>homegfsdev/job_cards/rocoto/eobs.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_eobs_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_eobs.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_eobs.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -2594,28 +2546,28 @@
 
 <task name="enkfgdas_eupd" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/eupd.sh</command>
+	<command>homegfsdev/job_cards/rocoto/eupd.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_eupd_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:45:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_eupd.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_eupd.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="enkfgdas_ediag"/>
@@ -2631,28 +2583,28 @@
 
 	<task name="enkfgdas_ecen#grp#" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/ecen.sh</command>
+		<command>homegfsdev/job_cards/rocoto/ecen.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_ecen#grp#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:20:00</walltime>
 		<nodes>1:ppn=96:tpp=2</nodes>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_ecen#grp#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_ecen#grp#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>enkfgdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHRGRP</name><value>#grp#</value></envar>
 		<envar><name>FHRLST</name><value>#lst#</value></envar>
 
@@ -2669,28 +2621,28 @@
 
 <task name="enkfgdas_echgres" cycledefs="gdas_half,gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/echgres.sh</command>
+	<command>homegfsdev/job_cards/rocoto/echgres.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_echgres_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<nodes>3:ppn=1:tpp=192</nodes>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_echgres.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_echgres.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -2703,29 +2655,28 @@
 
 <task name="enkfgdas_ediag" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/ediag.sh</command>
+	<command>homegfsdev/job_cards/rocoto/ediag.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_ediag_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>192</cores>
-	<memory>48GB</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_ediag.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_ediag.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="enkfgdas_eobs"/>
@@ -2735,29 +2686,28 @@
 
 <task name="enkfgdas_marineanlecen" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/marineanlecen.sh</command>
+	<command>homegfsdev/job_cards/rocoto/marineanlecen.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_marineanlecen_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:10:00</walltime>
 	<cores>96</cores>
-	<memory>24GB</memory>
-	<native>--exclusive</native>
+	<native>--exclusive --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_marineanlecen.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_marineanlecen.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<taskdep task="gdas_marinebmatinit"/>
@@ -2767,28 +2717,28 @@
 
 <task name="enkfgdas_esnowanl" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/esnowanl.sh</command>
+	<command>homegfsdev/job_cards/rocoto/esnowanl.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_esnowanl_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<nodes>1:ppn=96:tpp=2</nodes>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_esnowanl.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_esnowanl.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -2805,28 +2755,28 @@
 
 	<task name="enkfgdas_fcst_mem#member#" cycledefs="gdas_half,gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/fcst.sh</command>
+		<command>homegfsdev/job_cards/rocoto/fcst.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_fcst_mem#member#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:20:00</walltime>
 		<cores>192</cores>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_fcst_mem#member#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_fcst_mem#member#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>enkfgdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>ENSMEM</name><value>#member#</value></envar>
 		<envar><name>MEMDIR</name><value>mem#member#</value></envar>
 
@@ -2853,29 +2803,28 @@
 
 	<task name="enkfgdas_epos#grp#" cycledefs="gdas_half,gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/epos.sh</command>
+		<command>homegfsdev/job_cards/rocoto/epos.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_epos#grp#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-compute</partition>
+		<account>drsa-precip3</account>
+		<queue>normal</queue>
+		<partition>batch</partition>
 		<walltime>00:15:00</walltime>
 		<cores>192</cores>
-		<memory>360GB</memory>
-		<native>--exclusive</native>
+		<native>--exclusive --clusters=c6</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_epos#grp#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_epos#grp#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>enkfgdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>FHRGRP</name><value>#grp#</value></envar>
 		<envar><name>FHRLST</name><value>#lst#</value></envar>
 
@@ -2889,28 +2838,28 @@
 
 <task name="enkfgdas_esfc" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/esfc.sh</command>
+	<command>homegfsdev/job_cards/rocoto/esfc.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_esfc_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>01:15:00</walltime>
 	<cores>96</cores>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_esfc.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_esfc.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
@@ -2924,29 +2873,28 @@
 
 <task name="enkfgdas_earc_vrfy" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/earc_vrfy.sh</command>
+	<command>homegfsdev/job_cards/rocoto/earc_vrfy.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_earc_vrfy_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-service</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:30:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_earc_vrfy.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_earc_vrfy.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>ENSGRP</name><value>#grp#</value></envar>
 
 	<dependency>
@@ -2964,29 +2912,28 @@
 
 	<task name="enkfgdas_earc_tars_#grp#" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-		<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/earc_tars.sh</command>
+		<command>homegfsdev/job_cards/rocoto/earc_tars.sh</command>
 
 		<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_earc_tars_#grp#_@H</cyclestr></jobname>
-		<account>fv3-cpu</account>
-		<queue>batch</queue>
-		<partition>u1-service</partition>
+		<account>drsa-precip3</account>
+		<queue>hpss</queue>
+		<partition>dtn_f5_f6</partition>
 		<walltime>06:00:00</walltime>
 		<cores>1</cores>
-		<memory>4096M</memory>
-		<native>--export=NONE</native>
+		<native>--export=NONE --clusters=es</native>
 
-		<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_earc_tars_#grp#.log</cyclestr></join>
+		<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_earc_tars_#grp#.log</cyclestr></join>
 
 		<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-		<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-		<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+		<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+		<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 		<envar><name>NET</name><value>gfs</value></envar>
 		<envar><name>RUN</name><value>enkfgdas</value></envar>
 		<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 		<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-		<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-		<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+		<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+		<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 		<envar><name>ENSGRP</name><value>#grp#</value></envar>
 
 		<dependency>
@@ -3000,44 +2947,38 @@
 
 </metatask>
 
-<task name="enkfgdas_cleanup" cycledefs="gdas_half, gdas" maxtries="&MAXTRIES;">
+<task name="enkfgdas_cleanup" cycledefs="gdas" maxtries="&MAXTRIES;">
 
-	<command>/scratch3/NCEPDEV/global/David.Huber/GW/develop/dev/job_cards/rocoto/cleanup.sh</command>
+	<command>homegfsdev/job_cards/rocoto/cleanup.sh</command>
 
 	<jobname><cyclestr>C96C48mx500_S2SW_cyc_gfs_enkfgdas_cleanup_@H</cyclestr></jobname>
-	<account>fv3-cpu</account>
-	<queue>batch</queue>
-	<partition>u1-compute</partition>
+	<account>drsa-precip3</account>
+	<queue>normal</queue>
+	<partition>batch</partition>
 	<walltime>00:15:00</walltime>
 	<cores>1</cores>
-	<memory>4096M</memory>
-	<native>--export=NONE</native>
+	<native>--export=NONE --clusters=c6</native>
 
-	<join><cyclestr>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT/C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_cleanup.log</cyclestr></join>
+	<join><cyclestr>C96C48mx500_S2SW_cyc_gfs/logs/@Y@m@d@H/enkfgdas_cleanup.log</cyclestr></join>
 
 	<envar><name>RUN_ENVIR</name><value>emc</value></envar>
-	<envar><name>HOMEgfs</name><value>/scratch3/NCEPDEV/global/David.Huber/GW/develop</value></envar>
-	<envar><name>EXPDIR</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/EXPDIR/C96C48mx500_S2SW_cyc_gfs</value></envar>
+	<envar><name>HOMEgfs</name><value>homegfs</value></envar>
+	<envar><name>EXPDIR</name><value>C96C48mx500_S2SW_cyc_gfs</value></envar>
 	<envar><name>NET</name><value>gfs</value></envar>
 	<envar><name>RUN</name><value>enkfgdas</value></envar>
 	<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 	<envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 	<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-	<envar><name>COMROOT</name><value>/scratch3/NCEPDEV/stmp/David.Huber/rt_cleanup/COMROOT</value></envar>
-	<envar><name>DATAROOT</name><value>/scratch4/NCEPDEV/stmp/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
+	<envar><name>COMROOT</name><value>homegfsdev/workflow/test/COMROOT</value></envar>
+	<envar><name>DATAROOT</name><value>/gpfs/f6/drsa-precip3/world-shared/David.Huber/RUNDIRS/C96C48mx500_S2SW_cyc_gfs/enkfgdas.<cyclestr>@Y@m@d@H</cyclestr></value></envar>
 
 	<dependency>
 		<and>
+			<taskdep task="enkfgdas_earc_vrfy"/>
+			<metataskdep metatask="enkfgdas_earc_tars"/>
 			<or>
 				<taskdep task="gfs_fcst_seg0" cycle_offset="06:00:00"/>
 				<not><cycleexistdep cycle_offset="06:00:00"/></not>
-			</or>
-			<or>
-				<streq><left><cyclestr>@Y@m@d@H</cyclestr></left><right>2021122012</right></streq>
-				<and>
-					<taskdep task="enkfgdas_earc_vrfy"/>
-					<metataskdep metatask="enkfgdas_earc_tars"/>
-				</and>
 			</or>
 		</and>
 	</dependency>
